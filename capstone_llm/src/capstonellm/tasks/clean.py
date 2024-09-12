@@ -1,13 +1,36 @@
 import argparse
 import logging
 from pyspark.sql import SparkSession
+import pyspark.sql.functions as pyf
 
 from capstonellm.common.spark import ClosableSparkSession
 
 logger = logging.getLogger(__name__)
 
 def clean(spark: SparkSession, environment: str, tag: str):
-    pass
+    
+    questions_df = spark.read.json("data/questions.json" )
+    minimal_questions = questions_df\
+        .selectExpr("explode(items) as item")\
+        .select("item.*")\
+        .select(pyf.col("body").alias("question"), "question_id")
+
+
+    answers_df = spark.read.json("data/answers.json" )
+    minimal_answers = answers_df \
+        .selectExpr("explode(items) as item")\
+        .select("item.*") \
+        .filter(pyf.col("is_accepted") == True) \
+        .select(pyf.col("body").alias("answer"), "question_id")
+
+
+    joined_df = minimal_questions \
+        .join(minimal_answers, on="question_id", how="inner")
+
+    count = joined_df.count()
+    joined_df.repartition(count).write.mode("overwrite").json(
+        "s3a://dataminded-academy-capstone-llm-data-us/cleaned/{tag}/"
+    )
 
 def main():
     parser = argparse.ArgumentParser(description="capstone_llm")
