@@ -1,0 +1,15 @@
+docker:
+    path: .
+id: 74515046-2f6b-44fc-b680-b108a6192721
+ide:
+    filename: ide.yaml
+name: capstone-grp5-jasper
+resources:
+    path: resources
+streaming:
+    filename: streaming.yaml
+template: ""
+version: "0.3"
+workflows:
+    path: dags
+    version: "2"
