@@ -28,6 +28,7 @@ def create_dockeroperator(task):
         command=f"python3 -m capstonellm.tasks.{task} -e local",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
+        environment=env,
     )
 
 with DAG(
