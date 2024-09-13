@@ -21,7 +21,7 @@ env = {
 
 def create_dockeroperator(task):
     return DockerOperator(
-        task_id="docker run",
+        task_id=f"docker_run_{task}",
         image="llm-capstone-grp5",
         container_name="task___docker_install",
         api_version="auto",
@@ -31,7 +31,7 @@ def create_dockeroperator(task):
         network_mode="bridge",
     )
 with DAG(
-    "Capstone project",
+    "Capstone_project",
     default_args=default_args,
     schedule_interval="5 * * * *",
     catchup=False,
@@ -40,7 +40,7 @@ with DAG(
     # docker_ingest = create_dockeroperator("ingest")
 
     test_docker_ingest = DockerOperator(
-        task_id="docker run",
+        task_id="docker_run",
         image="llm-capstone-grp5",
         container_name="task___docker_install",
         api_version="auto",
@@ -50,6 +50,6 @@ with DAG(
         network_mode="bridge",
     )
 
-    # docker_clean = create_dockeroperator("clean")
+    docker_clean = create_dockeroperator("clean")
 
     test_docker_ingest >> docker_clean
