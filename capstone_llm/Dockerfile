@@ -9,3 +9,5 @@ RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY . .
 RUN pip3 install .
+
+RUN pip install -e .

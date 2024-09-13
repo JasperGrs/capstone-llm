@@ -23,15 +23,15 @@ def create_dockeroperator(task):
     return DockerOperator(
         task_id=f"docker_run_{task}",
         image="llm-capstone-grp5",
-        container_name="task___docker_install",
         api_version="auto",
         auto_remove=True,
-        command=f"python src/capstonellm/tasks/{task}.py ",
+        command=f"python3 -m capstonellm.tasks.{task} -e local",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
     )
+
 with DAG(
-    "Capstone_project",
+    "capstone_project",
     default_args=default_args,
     schedule_interval="5 * * * *",
     catchup=False,
@@ -42,13 +42,13 @@ with DAG(
     test_docker_ingest = DockerOperator(
         task_id="docker_run",
         image="llm-capstone-grp5",
-        container_name="task___docker_install",
         api_version="auto",
         auto_remove=True,
-        command="/bin/sleep 30",
+        command="ls",
         docker_url="unix://var/run/docker.sock",
         network_mode="bridge",
     )
+
 
     docker_clean = create_dockeroperator("clean")
 
